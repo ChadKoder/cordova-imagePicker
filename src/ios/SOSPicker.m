@@ -18,35 +18,38 @@
 @synthesize callbackId;
 
 - (void) getPictures:(CDVInvokedUrlCommand *)command {
-	NSDictionary *options = [command.arguments objectAtIndex: 0];
 
-	NSInteger maximumImagesCount = [[options objectForKey:@"maximumImagesCount"] integerValue];
-	self.width = [[options objectForKey:@"width"] integerValue];
-	self.height = [[options objectForKey:@"height"] integerValue];
-	self.quality = [[options objectForKey:@"quality"] integerValue];
+    [self.commandDelegate runInBackground:^{
+        NSDictionary *options = [command.arguments objectAtIndex: 0];
 
-	// Create the an album controller and image picker
-	ELCAlbumPickerController *albumController = [[ELCAlbumPickerController alloc] init];
-	
-	if (maximumImagesCount == 1) {
-      albumController.immediateReturn = true;
-      albumController.singleSelection = true;
-   } else {
-      albumController.immediateReturn = false;
-      albumController.singleSelection = false;
-   }
-   
-   ELCImagePickerController *imagePicker = [[ELCImagePickerController alloc] initWithRootViewController:albumController];
-   imagePicker.maximumImagesCount = maximumImagesCount;
-   imagePicker.returnsOriginalImage = 1;
-   imagePicker.imagePickerDelegate = self;
+		NSInteger maximumImagesCount = [[options objectForKey:@"maximumImagesCount"] integerValue];
+		self.width = [[options objectForKey:@"width"] integerValue];
+		self.height = [[options objectForKey:@"height"] integerValue];
+		self.quality = [[options objectForKey:@"quality"] integerValue];
 
-   albumController.parent = imagePicker;
-	self.callbackId = command.callbackId;
-	// Present modally
-	[self.viewController presentViewController:imagePicker
-	                       animated:YES
-	                     completion:nil];
+		// Create the an album controller and image picker
+		ELCAlbumPickerController *albumController = [[ELCAlbumPickerController alloc] init];
+		
+		if (maximumImagesCount == 1) {
+		  albumController.immediateReturn = true;
+		  albumController.singleSelection = true;
+	   } else {
+		  albumController.immediateReturn = false;
+		  albumController.singleSelection = false;
+	   }
+	   
+	   ELCImagePickerController *imagePicker = [[ELCImagePickerController alloc] initWithRootViewController:albumController];
+	   imagePicker.maximumImagesCount = maximumImagesCount;
+	   imagePicker.returnsOriginalImage = 1;
+	   imagePicker.imagePickerDelegate = self;
+
+	   albumController.parent = imagePicker;
+		self.callbackId = command.callbackId;
+		// Present modally
+		[self.viewController presentViewController:imagePicker
+							   animated:YES
+							 completion:nil];
+	}];
 }
 
 
